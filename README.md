@@ -63,9 +63,9 @@ Please refer to [`README.md`](./datasets/README.md) in the `datasets` folder.
 Training of the full SpecLig requires 8 A800 GPUs with 80G memmory each. The process includes training an all-atom variational encoder, and a block-level latent diffusion model, which commonly takes about 2-3 days.
 
 ```bash
-python train.py --gpus 1 --config ./configs/IterAE/train.yaml
+python train.py --gpus 8 --config ./configs/IterAE/train.yaml
 
-nohup python -u train.py --gpus 4  --config ./configs/LDM/train.yaml  --trainer.config.save_dir=./ckpts/speclig/LDM --model.autoencoder_ckpt=./checkpoints/vae.ckpt > diff.log 2>&1 &
+python train.py --gpus 8  --config ./configs/LDM/train.yaml  --trainer.config.save_dir=./ckpts/speclig/LDM --model.autoencoder_ckpt=YOUR_VAE_CKPT
 ```
 
 ### Inference
@@ -74,9 +74,9 @@ The following commands generate 100 candidates for each target in the test sets,
 
 ```bash
 # peptide
-nohup python -u generate.py --config configs/test/test_pep.yaml --ckpt checkpoints/model.ckpt --gpu 5 --save_dir ./results/pep > pep.log 2>&1 &
+python generate.py --config configs/test/test_pep.yaml --ckpt checkpoints/model.ckpt --gpu 5 --save_dir ./results/pep > pep.log
 # small molecule
-nohup python -u generate.py --config configs/test/test_mol.yaml --ckpt checkpoints/model.ckpt --gpu 6 --save_dir ./results/mol > mol.log 2>&1 &
+python generate.py --config configs/test/test_mol.yaml --ckpt checkpoints/model.ckpt --gpu 6 --save_dir ./results/mol > mol.log
 ```
 
 ### Evaluation
@@ -98,7 +98,7 @@ The evaluation scripts are as follows. Note that the evaluation process is CPU-i
 python -m scripts.metrics.peptide --results ./results/pep/results.jsonl --num_workers 96
 # small molecule
 conda activate cbgbench # use its own environment
-nohup bash scripts/metrics/mol.sh ./results/mol/candidates > eval_mol_.log 2>&1 &
+bash scripts/metrics/mol.sh ./results/mol/candidates
 ```
 
 ## :bulb: Contact
