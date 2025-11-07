@@ -1,0 +1,130 @@
+dataset:
+  train:
+    # Peptides
+    - class: DynamicBatchWrapper
+      dataset:
+        class: MixDatasetWrapper
+        datasets:
+          # pepbench
+          - class: PeptideDataset
+            mmap_dir: ./datasets/peptide/pepbench/processed
+            specify_index: ./datasets/peptide/pepbench/processed/train_index.txt
+            cluster: ./datasets/peptide/pepbench/train.cluster
+            length_type: block
+          # protein-peptide complex with non standard amino acids
+          - class: PeptideDataset
+            mmap_dir: ./datasets/peptide/pepbench/processed
+            specify_index: ./datasets/peptide/pepbench/processed/non_standard_index.txt
+            length_type: block
+          # protein-fragments
+          - class: PeptideDataset
+            mmap_dir: ./datasets/peptide/ProtFrag/processed
+            length_type: block
+        # weights: [1.0, 1.0, 1.0]
+      complexity: n*n
+      ubound_per_batch: 90000
+      n_use_max_in_batch: true
+    # Small Molecules
+    - class: DynamicBatchWrapper
+      dataset: # crossdocked
+        class: MoleculeDataset
+        mmap_dir: ./datasets/molecule/CrossDocked/processed
+        specify_index: ./datasets/molecule/CrossDocked/processed/train_index.txt
+        length_type: block
+      complexity: n*n
+      ubound_per_batch: 40000
+      n_use_max_in_batch: true
+    # Molecules only
+    - class: DynamicBatchWrapper
+      dataset: # chembl
+        class: MoleonlyDataset
+        mmap_dir: ./datasets/moleculeonly/ChemBL/processed
+        specify_index: ./datasets/moleculeonly/ChemBL/processed/train_index.txt
+        mask_ratio: 0.2
+      complexity: n*n
+      ubound_per_batch: 40000
+      n_use_max_in_batch: true
+  valid:
+    - class: DynamicBatchWrapper
+      dataset: 
+        class: PeptideDataset
+        mmap_dir: ./datasets/peptide/pepbench/processed
+        specify_index: ./datasets/peptide/pepbench/processed/valid_index.txt
+        length_type: block
+      complexity: n*n
+      ubound_per_batch: 90000
+      n_use_max_in_batch: true
+    - class: DynamicBatchWrapper
+      dataset: 
+        class: MoleculeDataset
+        mmap_dir: ./datasets/molecule/CrossDocked/processed
+        specify_index: ./datasets/molecule/CrossDocked/processed/valid_index.txt
+        length_type: block
+      complexity: n*n
+      ubound_per_batch: 40000 # avoid autoencoder OOM in validation
+      n_use_max_in_batch: true
+    - class: DynamicBatchWrapper
+      dataset: 
+        class: MoleonlyDataset
+        mmap_dir: ./datasets/moleculeonly/ChemBL/processed
+        specify_index: ./datasets/moleculeonly/ChemBL/processed/valid_index.txt
+        mask_ratio: 0.2
+      complexity: n*n
+      ubound_per_batch: 40000
+      n_use_max_in_batch: true
+
+dataloader:
+  train:
+    shuffle: true
+    num_workers: 12
+  valid:
+    num_workers: 0
+
+trainer:
+  class: LDMTrainer
+  criterion: loss
+  config:
+    max_epoch: 500
+    save_topk: 10
+    val_freq: 1
+    save_dir: ./ckpts/speclig
+    patience: 10
+    metric_min_better: true
+    proj_name: SpecLig # for wandb
+    logger: tensorboard # if you want to use wandb, please comment this line 
+
+    optimizer:
+      class: AdamW
+      lr: 1.0e-4
+
+    scheduler:
+      class: ReduceLROnPlateau
+      factor: 0.8
+      patience: 5
+      mode: min
+      frequency: val_epoch
+      min_lr: 5.0e-6
+
+model:
+  class: LDMMolDesign
+  autoencoder_ckpt: '' # load by yourself
+  latent_deterministic: true  # without resample in training
+  hidden_size: 512
+  num_steps: 100
+  h_loss_weight: 1.0
+  std: 10.0
+  diffusion_opt:
+    encoder_type: EPT
+    encoder_opt:
+      n_layers: 6
+      n_rbf: 64
+      cutoff: 3.0  # already normalized
+      n_head: 8
+      use_edge_feat: true
+      pre_norm: true
+      efficient: false
+      vector_act: layernorm
+    lpl_loss: 0.0
+  is_aa_corrupt_ratio: 0.1
+
+load_ckpt: ''

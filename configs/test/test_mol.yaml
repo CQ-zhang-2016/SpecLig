@@ -1,0 +1,21 @@
+dataset:
+  test:
+    class: MoleculeDataset
+    mmap_dir: ./datasets/molecule/CrossDocked/processed
+    specify_index: ./datasets/molecule/CrossDocked/processed/test_index.txt
+    sample_size: true
+    # sample_size_opt:
+    #   mode: block_by_atom
+    #   size_min: 20
+
+dataloader:
+  num_workers: 16
+  batch_size: 16
+
+n_samples: 100
+n_cycles: 1
+
+sample_opt:
+  guidance_scale: 1.8
+  max_grad_norm: 4.0
+  temperature: 1.2
