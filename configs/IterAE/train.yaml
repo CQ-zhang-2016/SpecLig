@@ -19,7 +19,7 @@ dataset:
             mmap_dir: ./datasets/peptide/ProtFrag/processed
         # weights: [1.0, 1.0, 1.0]
       complexity: n*n
-      ubound_per_batch: 1100000
+      ubound_per_batch: 11000000
       n_use_max_in_batch: true
     # Small Molecules
     - class: DynamicBatchWrapper
@@ -28,7 +28,7 @@ dataset:
         mmap_dir: ./datasets/molecule/CrossDocked/processed
         specify_index: ./datasets/molecule/CrossDocked/processed/train_index.txt
       complexity: n*n
-      ubound_per_batch: 1100000
+      ubound_per_batch: 11000000
       n_use_max_in_batch: true
     # Molecules only
     - class: DynamicBatchWrapper
@@ -38,7 +38,7 @@ dataset:
         specify_index: ./datasets/moleculeonly/ChemBL/processed/train_index.txt
         mask_ratio: 0.2
       complexity: n*n
-      ubound_per_batch: 1100000
+      ubound_per_batch: 11000000
       n_use_max_in_batch: true
   valid:
     - class: DynamicBatchWrapper
@@ -47,7 +47,7 @@ dataset:
         mmap_dir: ./datasets/peptide/pepbench/processed
         specify_index: ./datasets/peptide/pepbench/processed/valid_index.txt
       complexity: n*n
-      ubound_per_batch: 1100000
+      ubound_per_batch: 11000000
       n_use_max_in_batch: true
     - class: DynamicBatchWrapper
       dataset: 
@@ -55,7 +55,7 @@ dataset:
         mmap_dir: ./datasets/molecule/CrossDocked/processed
         specify_index: ./datasets/molecule/CrossDocked/processed/valid_index.txt
       complexity: n*n
-      ubound_per_batch: 1100000
+      ubound_per_batch: 11000000
       n_use_max_in_batch: true
     - class: DynamicBatchWrapper
       dataset: 
@@ -64,7 +64,7 @@ dataset:
         specify_index: ./datasets/moleculeonly/ChemBL/processed/valid_index.txt
         mask_ratio: 0.2
       complexity: n*n
-      ubound_per_batch: 1100000
+      ubound_per_batch: 11000000
       n_use_max_in_batch: true
 
 dataloader:

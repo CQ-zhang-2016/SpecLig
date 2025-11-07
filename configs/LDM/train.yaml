@@ -22,7 +22,7 @@ dataset:
             length_type: block
         # weights: [1.0, 1.0, 1.0]
       complexity: n*n
-      ubound_per_batch: 90000
+      ubound_per_batch: 1800000
       n_use_max_in_batch: true
     # Small Molecules
     - class: DynamicBatchWrapper
@@ -32,7 +32,7 @@ dataset:
         specify_index: ./datasets/molecule/CrossDocked/processed/train_index.txt
         length_type: block
       complexity: n*n
-      ubound_per_batch: 40000
+      ubound_per_batch: 800000
       n_use_max_in_batch: true
     # Molecules only
     - class: DynamicBatchWrapper
@@ -42,7 +42,7 @@ dataset:
         specify_index: ./datasets/moleculeonly/ChemBL/processed/train_index.txt
         mask_ratio: 0.2
       complexity: n*n
-      ubound_per_batch: 40000
+      ubound_per_batch: 800000
       n_use_max_in_batch: true
   valid:
     - class: DynamicBatchWrapper
@@ -52,7 +52,7 @@ dataset:
         specify_index: ./datasets/peptide/pepbench/processed/valid_index.txt
         length_type: block
       complexity: n*n
-      ubound_per_batch: 90000
+      ubound_per_batch: 1800000
       n_use_max_in_batch: true
     - class: DynamicBatchWrapper
       dataset: 
@@ -61,7 +61,7 @@ dataset:
         specify_index: ./datasets/molecule/CrossDocked/processed/valid_index.txt
         length_type: block
       complexity: n*n
-      ubound_per_batch: 40000 # avoid autoencoder OOM in validation
+      ubound_per_batch: 800000 # avoid autoencoder OOM in validation
       n_use_max_in_batch: true
     - class: DynamicBatchWrapper
       dataset: 
@@ -70,7 +70,7 @@ dataset:
         specify_index: ./datasets/moleculeonly/ChemBL/processed/valid_index.txt
         mask_ratio: 0.2
       complexity: n*n
-      ubound_per_batch: 40000
+      ubound_per_batch: 800000
       n_use_max_in_batch: true
 
 dataloader:
